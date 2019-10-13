@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
     	<add id="Loyalty_CustomerLoyalty::loyalty" title="Fidelización Clientes" translate="title" module="Loyalty_CustomerLoyalty" parent="Magento_Customer::customer" sortOrder="50" resource="Loyalty_CustomerLoyalty::loyalty"/>
-        <add id="Loyalty_CustomerLoyalty::validation" title="Validaciones" translate="title" module="Loyalty_CustomerLoyalty" sortOrder="10" action="loyalty_customerloyalty/validation" resource="Loyalty_CustomerLoyalty::validation" parent="Loyalty_CustomerLoyalty::loyalty"/>
+        <add id="Loyalty_CustomerLoyalty::validation" title="Validaciones" translate="title" module="Loyalty_CustomerLoyalty" sortOrder="10" action="customerloyalty/validation/index" resource="Loyalty_CustomerLoyalty::validation" parent="Loyalty_CustomerLoyalty::loyalty"/>
         <add id="Loyalty_CustomerLoyalty::configuration" title="Configuración" translate="title" module="Loyalty_CustomerLoyalty" sortOrder="20" action="adminhtml/system_config/edit/section/customerloyalty" resource="Loyalty_CustomerLoyalty::configuration" parent="Loyalty_CustomerLoyalty::loyalty"/>
     </menu>
 </config>
