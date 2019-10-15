@@ -39,6 +39,11 @@ class EmailSend
 	protected $_storeManager;
 
 	/**
+	 * @var Loyalty\CustomerLoyalty\Model\ResourceModel\Validation\CollectionFactory
+	 */
+	protected $validationFactory;
+
+	/**
 	 * @var Loyalty\CustomerLoyalty\Model\ValidationTokenFactory
 	 */
 	protected $validationTokenFactory;
@@ -49,12 +54,7 @@ class EmailSend
 	protected $validationTokenCollectionFactory;
 
 	/**
-	 * @var Loyalty\CustomerLoyalty\Model\ResourceModel\Validation\CollectionFactory
-	 */
-	protected $validationFactory;
-
-	/**
-	 * Class constructor
+	 * Class Constructor
 	 *
 	 * @param LoggerInterface                  $logger
 	 * @param OrderFactory                     $orderFactory
@@ -70,8 +70,8 @@ class EmailSend
 		ScopeConfigInterface $scopeConfig,
 		StoreManagerInterface $_storeManager,
 		ValidationFactory $validationFactory,
-		ValidationTokenFactory $validationTokenFactory
-		ValidationTokenCollectionFactory $validationTokenCollectionFactory,
+		ValidationTokenFactory $validationTokenFactory,
+		ValidationTokenCollectionFactory $validationTokenCollectionFactory
 	) {
 		$this->logger = $logger;
 		$this->scopeConfig = $scopeConfig;
@@ -93,17 +93,19 @@ class EmailSend
 	}
 
 	/**
-	 * Processing order collection
+	 * Processing Order Collection
 	 *
 	 * @param  Magento\Sales\Model\ResourceModel\Order\Collection $collection
 	 */
-	private function processOrderCollection(Magento\Sales\Model\ResourceModel\Order\Collection $collection)
+	private function processOrderCollection($collection)
 	{
 		foreach ($collection as $order) {
 			$customerToken = $this->customerTokenGenerator();
 
 			if ($this->sendEmail($order->getCustomerEmail(), $customerToken, $order->getIncrementId())) {
-				$this->tableTokenPersistData($customerToken, $order->getId());
+				if (!$this->tableTokenPersistData($customerToken, $order->getId()) instanceof ValidationToken) {
+					$this->logger->error(sprintf('Error sending email from cron to order %s - %s', $order->getId(), $order->getIncrementId()));
+				}
 			}
 		}
 	}
@@ -114,14 +116,14 @@ class EmailSend
 	 * @param  string $token
 	 * @param  string $orderId
 	 *
-	 * @return string
+	 * @return int
 	 */
 	private function tableTokenPersistData(string $token, string $orderId)
 	{
 		return $this->validationTokenFactory->create()->setData([
 					'order_id' => $orderId,
 					'token' => $token
-				])->save()->getId();
+				])->save();
 	}
 
 	/**
@@ -133,11 +135,7 @@ class EmailSend
 	 */
 	private function sendEmail(string $customerEmail, string $token, $orderNumber)
 	{
-		return mail('alvarogv795@gmail.com',
-					self::EMAIL_SUBJECT_TEXT,
-					sprint('Estimado cliente, podrá realizar una valoración del pedido Nº%s en la siguiente dirección %s.', $orderNumber, $this->getUrlReview($token))
-				);
-		// return mail($customerEmail, 'Probando, falta URL Key', self::EMAIL_SUBJECT_TEXT);
+		return mail($customerEmail, self::EMAIL_SUBJECT_TEXT, sprintf('Estimado cliente, podrá realizar una valoración del pedido Nº%s en la siguiente dirección %s.', $orderNumber, $this->getUrlReview($token)));
 	}
 
 	/**
@@ -149,7 +147,7 @@ class EmailSend
 	 */
 	private function getUrlReview(string $token)
 	{
-		return sprintf('%sreview/create/%s', $this->_storeManager->getStore()->getBaseUrl(), $token);
+		return sprintf('%sreview/new/%s', $this->_storeManager->getStore()->getBaseUrl(), $token);
 	}
 
 	/**
@@ -187,6 +185,7 @@ class EmailSend
 	 *
 	 * @return Magento\Sales\Model\ResourceModel\Order\Collection
 	 */
+	/** @TODO ELIMINAR COMENTARIOS */
 	private function getOrderCollection(string $date, array $orderIds)
 	{
 		$orderCollection = $this->orderFactory->create()
