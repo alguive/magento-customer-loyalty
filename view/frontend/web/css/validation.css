@@ -1,0 +1,22 @@
+.review {
+	padding: 10px;
+}
+
+.header {
+	margin-bottom: 10px;
+	border-bottom: 1px solid;
+}
+
+.header p {
+	font-size: 20px;
+	margin-bottom: 0;
+	font-weight: bold;
+}
+
+.ratings-mid.valoration {
+	font-size: 15px;
+}
+
+.rating i.fas.fa-star {
+	color: #ffc60b;
+}

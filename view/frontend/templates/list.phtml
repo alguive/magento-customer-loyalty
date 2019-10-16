@@ -1,0 +1,34 @@
+<?php
+$viewModel = $block->getData('view_model');
+$reviewsCollection = $block->getReviewsCollection();
+?>
+<script src="https://kit.fontawesome.com/6cfc161af8.js" crossorigin="anonymous"></script>
+<style type="text/css">
+
+</style>
+
+<div id="Valorations">
+	<?php
+	foreach ($reviewsCollection as $review) {
+		$customerName = $viewModel->getCustomerFirstNameByValidationId($review->getData('customerloyalty_sent_entity_id'));
+		if (null === $customerName) {
+			continue;
+		}
+		?>
+		<div class="review">
+			<div class="header">
+				<p><?php echo $customerName ?></p>
+			</div>
+			<dvi class="ratings">
+				<div class="ratings-mid valoration">
+					<div class="rating"><?php echo __('Producto:') ?> <?php echo $this->getStarsToString($review->getProduct()) ?></div>
+					<div class="rating"><?php echo __('Entrega:') ?> <?php echo $this->getStarsToString($review->getDelivery()) ?></div>
+					<div class="rating"><?php echo __('Atención al cliente:') ?> <?php echo $this->getStarsToString($review->getCustomerSupport()) ?></div>
+					<div class="rating"><?php echo __('Comentarios:') ?> <?php echo sprintf('%s', trim($review->getData('comments'))) ?></div>
+				</div>
+			</dvi>
+		</div>
+		<?php
+	}
+	?>
+</div>

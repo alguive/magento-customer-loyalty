@@ -10,8 +10,7 @@ class Validation extends Container
 	{
 		$this->_controller = 'adminhtml_validation';
 		$this->_blockGroup = 'Loyalty_CustomerLoyalty';
-		$this->_headerText = __('Validation');
-		$this->_addButtonLabel = __('Create New Post');
+		$this->_headerText = __('Validación');
 		parent::_construct();
 	}
 }

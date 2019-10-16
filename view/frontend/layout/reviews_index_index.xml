@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="Loyalty_CustomerLoyalty::css/validation.css" />
+		<script src="https://kit.fontawesome.com/6cfc161af8.js" src_type="url" />
+	</head>
+    <referenceContainer name="content">
+        <block class="Loyalty\CustomerLoyalty\Block\Index" name="reviews_index" template="Loyalty_CustomerLoyalty::list.phtml" cacheable="false">
+	    	<arguments>
+	    		<argument name="view_model" xsi:type="object">Loyalty\CustomerLoyalty\ViewModel\ValidationModel</argument>
+	    	</arguments>
+        </block>
+    </referenceContainer>
+</page>

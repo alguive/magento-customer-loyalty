@@ -16,6 +16,8 @@ class EmailSend
 
 	const EMAIL_SUBJECT_TEXT = 'Order valoration';
 
+	const CONTROLLER_URL_ROUTE = 'reviews/review/create/id/';
+
 	const STORE_CONFIG_SECTION = 'customerloyalty/customer_loyalty/delay_days';
 
 	/**
@@ -82,9 +84,6 @@ class EmailSend
 		$this->validationTokenCollectionFactory = $validationTokenCollectionFactory;
 	}
 
-	/**
-	 * @TODO CATCH EXCEPTIONS!
-	 */
 	public function execute()
 	{
 		$orderIds = $this->getOrderIds();
@@ -147,7 +146,7 @@ class EmailSend
 	 */
 	private function getUrlReview(string $token)
 	{
-		return sprintf('%sreview/new/%s', $this->_storeManager->getStore()->getBaseUrl(), $token);
+		return sprintf('%s%s%s', $this->_storeManager->getStore()->getBaseUrl(), self::CONTROLLER_URL_ROUTE, $token);
 	}
 
 	/**
@@ -185,13 +184,11 @@ class EmailSend
 	 *
 	 * @return Magento\Sales\Model\ResourceModel\Order\Collection
 	 */
-	/** @TODO ELIMINAR COMENTARIOS */
 	private function getOrderCollection(string $date, array $orderIds)
 	{
 		$orderCollection = $this->orderFactory->create()
 								->addAttributeToSelect('*')
-								->addFieldToFilter('status', ['eq' => 'closed'])
-								// ->addFieldToFilter('status', ['eq' => 'complete'])
+								->addFieldToFilter('status', ['eq' => 'complete'])
 								->addFieldToFilter('created_at', ['lteq' => $date])
 								->addFieldToFilter('entity_id', ['nin' => implode(',', $this->getOrderIds())]);
 
